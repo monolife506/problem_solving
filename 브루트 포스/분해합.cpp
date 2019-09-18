@@ -1,4 +1,4 @@
-// 2231¹ø : ºÐÇØÇÕ
+// 2231ë²ˆ : ë¶„í•´í•©
 
 #include <iostream>
 #include <string>

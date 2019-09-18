@@ -1,4 +1,4 @@
-// 10250╧Ь : ACM хёез
+// 10250? : ACM ??
 
 #include <iostream>
 using namespace std;

@@ -1,4 +1,4 @@
-// 1002¹ø ¹®Á¦ : ÅÍ·¿
+// 1002ë²ˆ : í„°ë ›
 
 #include <iostream>
 #include <vector>

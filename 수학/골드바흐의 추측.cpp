@@ -1,4 +1,4 @@
-// 9020¹ø : °ñµå¹ÙÈåÀÇ ÃßÃø
+// 9020ë²ˆ : ê³¨ë“œë°”íì˜ ì¶”ì¸¡
 
 #include <iostream>
 #include <vector>
@@ -6,13 +6,13 @@ using namespace std;
 
 int main()
 {
-	// ÀÔ·Â
+	// ì…ë ¥
 	size_t T; cin >> T;
 	vector<unsigned> nums(T);
 	for (size_t i = 0; i < T; i++)
 		cin >> nums[i];
 
-	// 5000±îÁö ¼Ò¼ö ±¸ÇÏ±â
+	// 5000ê¹Œì§€ ì†Œìˆ˜ êµ¬í•˜ê¸°
 	bool D[10001]; vector<unsigned> decimals;
 	for (size_t i = 0; i < 10001; i++)
 		(i == 0 || i == 1) ? D[i] = false : D[i] = true;
@@ -28,7 +28,7 @@ int main()
 		}
 	}
 
-	// Ãâ·Â
+	// ì¶œë ¥
 	bool isFoundPartion{ false };
 	for (const auto& N : nums)
 	{

@@ -1,4 +1,4 @@
-// 1018¹ø : Ã¼½ºÆÇ ´Ù½Ã Ä¥ÇÏ±â
+// 1018ë²ˆ : ì²´ìŠ¤íŒ ë‹¤ì‹œ ì¹ í•˜ê¸°
 
 #include <iostream>
 #include <vector>
@@ -18,8 +18,8 @@ int main()
 		}
 	}
 
-	array<array<char, 8>, 8> black; // ¿¹½Ã º¸µå : ºí·¢
-	array<array<char, 8>, 8> white; // ¿¹½Ã º¸µå : È­ÀÌÆ®
+	array<array<char, 8>, 8> black; 
+	array<array<char, 8>, 8> white;
 	
 	for (size_t i = 0; i < 8; i++)
 	{

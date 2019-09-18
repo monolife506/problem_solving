@@ -1,4 +1,4 @@
-// 2108번 : 통계학
+// 2108? : ???
 
 #include <iostream>
 #include <vector>

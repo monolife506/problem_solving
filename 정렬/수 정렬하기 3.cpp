@@ -1,5 +1,5 @@
-// 10989¹ø : ¼ö Á¤·ÄÇÏ±â 3
-// Counting Sort ±¸Çö..?
+// 10989ë²ˆ : ìˆ˜ ì •ë ¬í•˜ê¸° 3
+// Counting Sort êµ¬í˜„..?
 
 #include <iostream>
 #include <array>

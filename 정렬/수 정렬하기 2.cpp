@@ -1,4 +1,4 @@
-// 2751¹ø : ¼ö Á¤·ÄÇÏ±â 2
+// 2751ë²ˆ : ìˆ˜ ì •ë ¬í•˜ê¸° 2
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -15,7 +15,7 @@ int main()
 		cout << item << '\n';
 }
 
-// merge sort ±¸Çö
+// merge sort êµ¬í˜„
 /*
 void merge(int list[], int left, int middle, int right)
 {

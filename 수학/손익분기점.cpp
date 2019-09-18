@@ -1,4 +1,4 @@
-// 1712¹ø : ¼ÕÀÍºĞ±âÁ¡
+// 1712ë²ˆ : ì†ìµë¶„ê¸°ì 
 
 #include <iostream>
 using namespace std;

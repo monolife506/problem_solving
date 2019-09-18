@@ -1,4 +1,4 @@
-// 2292¹ø : ¹úÁý
+// 2292ë²ˆ : ë²Œì§‘
 
 #include <iostream>
 using namespace std;
