@@ -1,4 +1,4 @@
-// 2039¹ø : ÀÏ°ö ³­ÀïÀÌ
+// 2039ë²ˆ : ë¸”ë™ì­
 #include <iostream>
 #include <array>
 #include <algorithm>
