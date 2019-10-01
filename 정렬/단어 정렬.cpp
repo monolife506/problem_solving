@@ -1,5 +1,3 @@
-// 단어 정렬
-
 #include <iostream>
 #include <string>
 #include <algorithm>
