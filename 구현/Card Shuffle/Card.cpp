@@ -22,3 +22,8 @@ string Card::toString()
 	tmp = card_face[face] + " of " + card_suit[suit];
 	return tmp;
 }
+
+// 카드의 숫자 return
+int Card::getFace() const { return face; };
+// 카드의 문양 return
+int Card::getSuit() const { return suit; };

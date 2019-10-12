@@ -19,6 +19,8 @@ public:
 
 	Card(int = Ace, int = Spade); // 생성자 : enum을 이용한 face와 suit 결정
 	std::string toString(); // 카드의 정보를 "[Face] of [Suit]" 형태의 string으로 return
+	int getFace() const; // 카드의 숫자 return
+	int getSuit() const; // 카드의 문양 return
 private:
 	int face; // 카드의 Face (숫자)
 	int suit; // 카드의 Suit (문양)
