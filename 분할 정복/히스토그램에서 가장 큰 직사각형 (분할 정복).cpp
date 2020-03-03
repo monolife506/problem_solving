@@ -1,4 +1,6 @@
 // 6549번: 히스토그램에서 가장 큰 직사각형
+// 분할 정복을 이용한 풀이
+// 세그먼트 트리: https://www.acmicpc.net/blog/view/9
 
 #include <iostream>
 #include <algorithm>
@@ -76,5 +78,3 @@ int main()
         cin >> N;
     }
 }
-
-// 세그먼트 트리: https://www.acmicpc.net/blog/view/9
