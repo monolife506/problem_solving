@@ -1,4 +1,4 @@
-// 9012¹ø : °ýÈ£
+// 9012ë²ˆ: ê´„í˜¸
 
 #include <iostream>
 #include <string>
@@ -7,13 +7,14 @@ using namespace std;
 
 int main()
 {
-	size_t T; 
+	size_t T;
 	cin >> T;
 
 	stack<char> S;
 	string input_str;
-	char now; int p_count;
-	
+	char now;
+	int p_count;
+
 	for (size_t i = 0; i < T; i++)
 	{
 		p_count = 0;
@@ -23,18 +24,24 @@ int main()
 
 		while (!S.empty())
 		{
-			now = S.top(); S.pop();
-			if (now == ')') ++p_count;
+			now = S.top();
+			S.pop();
+			if (now == ')')
+				++p_count;
 			else if (now == '(')
 			{
 				--p_count;
-				if (p_count < 0) break;
+				if (p_count < 0)
+					break;
 			}
 		}
-		while (!S.empty()) S.pop();
+		while (!S.empty())
+			S.pop();
 
-		if (p_count == 0) cout << "YES"s;
-		else cout << "NO"s;
+		if (p_count == 0)
+			cout << "YES"s;
+		else
+			cout << "NO"s;
 		cout << '\n';
 	}
 }
