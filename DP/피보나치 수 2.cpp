@@ -1,11 +1,11 @@
-// 2748¹ø : ÇÇº¸³ªÄ¡ ¼ö 2
+// 2748ï¿½ï¿½ : ï¿½Çºï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ 2
 
 #include <iostream>
 using namespace std;
 
-unsigned long long arr[91] = {};
+long long arr[91] = {};
 
-unsigned long long DP(int N)
+long long DP(int N)
 {
 	if (arr[N] != 0)
 		return arr[N];
@@ -22,7 +22,7 @@ unsigned long long DP(int N)
 
 int main()
 {
-	int N; cin >> N;
+	int N;
+	cin >> N;
 	cout << DP(N);
 }
-

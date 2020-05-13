@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 int main()
@@ -34,8 +35,8 @@ int main()
                 {
                     if (used[sc[j]] == 1)
                     {
-                        cnt++;
                         used[sc[j]] = 2;
+                        cnt++;
                         idx = j;
                     }
                 }
@@ -43,22 +44,9 @@ int main()
                 if (cnt == N)
                     used[sc[idx]] = 0;
                 else
-                {
-                    for (size_t j = 0; j < K + 1; j++)
-                    {
-                        if (used[j] == 1)
-                        {
-                            used[j] = 0;
-                            break;
-                        }
-                    }
-                }
+                    *find(used.begin(), used.end(), 1) = 0;
 
-                for (size_t j = 0; j < K + 1; j++)
-                {
-                    if (used[j] == 2)
-                        used[j] = 1;
-                }
+                replace(used.begin(), used.end(), 2, 1);
                 ans++;
             }
             else
