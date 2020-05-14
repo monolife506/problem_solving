@@ -13,6 +13,6 @@ for i in range(1, N + 1):
 ta[0][0] = ta[0][1] = ta[1][0] = 0
 ta[1][1] = st[1]
 for i in range(2, N + 1):
-    ta[i][0] = max(ta[i - 1][1], max(ta[i - 2][0], ta[i - 2][1])) + st[i]
+    ta[i][0] = ta[i - 1][1] + st[i]
     ta[i][1] = max(ta[i - 2][0], ta[i - 2][1]) + st[i]
 print(max(ta[N][0], ta[N][1]))

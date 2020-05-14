@@ -12,9 +12,9 @@ int main()
     for (size_t i = 1; i <= N; i++)
         cin >> A[i];
 
-    len.fill(1);     // 처음에는 각 수열이 자기 자신만 가지고 있다고 한다.
     int max_len = 1; // 가장 긴 증가하는 부분 수열의 길이
-    for (size_t i = 1; i <= N - 1; i++)
+    len[0] = 0;
+    for (size_t i = 0; i <= N - 1; i++)
     {
         for (size_t j = i + 1; j <= N; j++)
         {

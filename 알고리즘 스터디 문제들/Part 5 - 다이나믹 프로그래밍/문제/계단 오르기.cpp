@@ -22,7 +22,7 @@ int main()
     ta[1][1] = st[1];
     for (size_t i = 2; i <= N; i++)
     {
-        ta[i][0] = max(ta[i - 1][1], max(ta[i - 2][0], ta[i - 2][1])) + st[i];
+        ta[i][0] = ta[i - 1][1] + st[i];
         ta[i][1] = max(ta[i - 2][0], ta[i - 2][1]) + st[i];
     }
     cout << max(ta[N][0], ta[N][1]);
