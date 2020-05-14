@@ -1,3 +1,6 @@
+// 1520번: 내리막길
+// DFS BFS 순간 까먹어서 뇌정지오지 말자.
+
 #include <iostream>
 #include <array>
 #include <stack>
