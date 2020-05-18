@@ -15,17 +15,16 @@ int main()
     cin >> N;
     for (size_t i = 0; i < N; i++)
         cin >> con[i].first >> con[i].second;
-    con[N].first = con[N].second = 0;
 
     int ans = 0;
-    for (size_t i = 1; i <= N; i++)
+    for (size_t i = 0; i < N; i++)
     {
-        for (size_t j = 0; j < i; j++)
+        for (size_t j = i + 1; j <= N; j++)
         {
-            if (j + con[j].first <= i && dp[j] + con[j].second > dp[i])
+            if (i + con[i].first <= j && dp[i] + con[i].second > dp[j])
             {
-                dp[i] = dp[j] + con[j].second;
-                ans = max(ans, dp[i]);
+                dp[j] = dp[i] + con[i].second;
+                ans = max(ans, dp[j]);
             }
         }
     }
