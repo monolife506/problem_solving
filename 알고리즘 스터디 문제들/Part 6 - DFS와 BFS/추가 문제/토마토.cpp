@@ -23,7 +23,7 @@ array<array<array<int, 101>, 101>, 101> box; // box[z][y][x] == (x, y, z)위치�
 int bfs()
 {
     int max_day = 1; // 마지막으로 토마토가 익었을 때의 숫자
-    while (!Q.empty())
+    while (!Q.empty() && remain != 0)
     {
         P cur = Q.front();
         Q.pop();
