@@ -1,6 +1,7 @@
 /.vscode
 /.vs
 compiled.out
+compiled.exe
 *.obj
 *.ilk
 *.pdb
