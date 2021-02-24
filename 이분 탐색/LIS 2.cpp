@@ -1,61 +1,57 @@
-// 12015번: 가장 긴 증가하는 부분 수열 2
-// 12738번: 가장 긴 증가하는 부분 수열 3
-// 14003번: 가장 긴 증가하는 부분 수열 5
-
 #include <iostream>
 #include <vector>
 #include <stack>
 #include <algorithm>
 using namespace std;
+typedef pair<int, int> P;
 
 int main()
 {
     ios::sync_with_stdio(0);
     cin.tie(0);
+    cout.tie(0);
 
-    size_t N;
+    int N;
     cin >> N;
 
-    vector<int> LIS(1, INT32_MIN);
-    vector<int> nums(1, 0);
-    vector<int> pos(1, 0);
-    for (size_t i = 0; i < N; i++)
-    {
-        int num;
-        cin >> num;
-        nums.push_back(num);
+    vector<int> nums(N);
+    vector<int> seq;
+    vector<int> idx;
 
-        if (num > LIS.back())
+    for (int &num : nums)
+    {
+        cin >> num;
+
+        if (seq.empty() || seq.back() < num)
         {
-            LIS.push_back(num);
-            pos.push_back(LIS.size() - 1);
+            seq.push_back(num);
+            idx.push_back(seq.size() - 1);
         }
         else
         {
-            int idx = (int)(lower_bound(LIS.begin(), LIS.end(), num) - LIS.begin());
-            LIS[idx] = num;
-            pos.push_back(idx);
+            auto it = lower_bound(seq.begin(), seq.end(), num);
+            idx.push_back((int)(it - seq.begin()));
+            *it = num;
         }
     }
 
-    stack<int> seq;
-    int cur = LIS.size() - 1;
+    int cur = seq.size() - 1;
+    stack<int> LIS;
 
-    cout << cur << '\n';
-    for (size_t i = pos.size() - 1; i > 0; i--)
+    for (int i = idx.size() - 1; i >= 0; i--)
     {
-        if (pos[i] == cur)
+        if (idx[i] == cur)
         {
-            seq.push(nums[i]);
+            LIS.push(nums[i]);
             cur--;
-            if (cur == 0)
-                break;
         }
     }
-    while (!seq.empty())
+
+    cout << seq.size() << '\n';
+    while (!LIS.empty())
     {
-        cout << seq.top() << " ";
-        seq.pop();
+        cout << LIS.top() << " ";
+        LIS.pop();
     }
 }
 
