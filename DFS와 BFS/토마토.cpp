@@ -1,64 +1,61 @@
-// 7576�� : �丶��
+// 7576번: 토마토
+// 옛날 jot같은 코드 2년 뒤에 수정하기
 
 #include <iostream>
-#include <array>
-#include <vector>
 #include <queue>
 using namespace std;
+typedef pair<int, int> P;
+
+int M, N, total = 0;
+int tomato[1000][1000];
+queue<P> Q;
+
+int BFS()
+{
+    static int dx[4] = { 1, -1, 0, 0 };
+    static int dy[4] = { 0, 0, 1, -1 };
+
+    int cnt = 0;
+    int last = 1;
+    while (!Q.empty()) {
+        P cur = Q.front();
+        Q.pop();
+        cnt++;
+
+        for (size_t i = 0; i < 4; i++) {
+            int x = cur.first + dx[i];
+            int y = cur.second + dy[i];
+            if (x < 0 || x >= N || y < 0 || y >= M)
+                continue;
+            if (tomato[x][y] == 0) {
+                tomato[x][y] = tomato[cur.first][cur.second] + 1;
+                last = tomato[x][y];
+                Q.push(P(x, y));
+            }
+        }
+    }
+
+    if (total != cnt)
+        return -1;
+    return last - 1;
+}
 
 int main()
 {
-	size_t M, N; cin >> M >> N;
-	vector<vector<short>> box(N, vector<short>(M, 0));
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
 
-	queue<int> Q;
-	size_t total_tomato{0};
-	vector<int> initial_riped;
-	for (size_t i = 0; i < N; i++)
-	{
-		for (size_t j = 0; j < M; j++)
-		{
-			cin >> box[i][j];
-			if (box[i][j] != -1)
-				total_tomato++;
-			if (box[i][j] == 1)
-				Q.push(i * M + j);
-		}
-	}
-	
-	int current_x, current_y, day{ 0 };
-	size_t riped_tomato{ 0 }, day_tomato{ Q.size() }, nextday_tomato{ 0 };
-	array<short, 4> x_move = {0, 0, -1, 1};
-	array<short, 4> y_move = {1, -1, 0, 0};
-	
-	do
-	{
-		int now = Q.front(); Q.pop(); 
-		riped_tomato++; day_tomato--;
-		for (size_t i = 0; i < 4; i++)
-		{
-			current_x = (now % M) + x_move[i];
-			current_y = (now / M) + y_move[i];
-			if (current_x < 0 || current_x >= M) continue;
-			if (current_y < 0 || current_y >= N) continue;
-			if (box[current_y][current_x] == 0)
-			{
-				box[current_y][current_x] = 1;
-				Q.push(current_y * M + current_x);
-				nextday_tomato++;
-			}
-		}
+    cin >> M >> N;
+    for (size_t i = 0; i < N; i++) {
+        for (size_t j = 0; j < M; j++) {
+            cin >> tomato[i][j];
+            if (tomato[i][j] == 1)
+                Q.push(P(i, j));
+            if (tomato[i][j] != -1)
+                total++;
+        }
+    }
 
-		if (day_tomato == 0 && !Q.empty())
-		{
-			day_tomato = nextday_tomato;
-			nextday_tomato = 0; day++;
-		}
-
-	} while (!Q.empty());
-
-	if (riped_tomato != total_tomato)
-		cout << -1 << endl;
-	else
-		cout << day << endl;
+    cout << BFS() << '\n';
 }
