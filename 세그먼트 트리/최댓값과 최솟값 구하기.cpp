@@ -41,7 +41,8 @@ int main()
         cin >> arr[i];
 
     init(1, 0, N - 1);
-    for (size_t i = 0; i < M; i++) {
+    for (size_t i = 0; i < M; i++)
+    {
         int a, b;
         cin >> a >> b;
         P ans = find(1, 0, N - 1, a - 1, b - 1);
