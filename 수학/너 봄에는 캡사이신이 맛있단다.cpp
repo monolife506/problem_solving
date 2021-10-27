@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <iostream>
 using namespace std;
+typedef long long ll;
 
 const int MOD = 1'000'000'007;
 
@@ -13,13 +14,17 @@ void preprocess(int N)
     for (size_t i = 1; i < N; i++)
         power2[i] = (power2[i - 1] * 2) % MOD;
 
-    sort(scovile, scovile + N);
+    sort(scovile, scovile + N, greater<int>());
 }
 
-long long calculate(int N)
+ll calculate(int N)
 {
-    long long ans = 0;
+    ll ans = 0;
     for (size_t i = 0; i < N; i++) {
+        ll tmp1 = (power2[N - (i + 1)] - power2[i] + MOD) % MOD;
+        ll tmp2 = (tmp1 * (scovile[i] % MOD)) % MOD;
+        ans += tmp2;
+        ans %= MOD;
     }
 
     return ans;
