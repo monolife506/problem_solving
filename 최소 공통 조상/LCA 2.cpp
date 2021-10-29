@@ -8,8 +8,7 @@ int idx = 1;
 int serial[200001];        // dfs 순회시 노드의 번호
 int serial_depth[200001];  // dfs 순회시 노드의 depth
 int idx_to_serial[100001]; // serial 내에서 특정 번호의 노드가 처음 나타나는 index
-
-int seg_tree[800001]; // serial에 대한 RMQ 세그먼트 트리
+int seg_tree[800001];      // serial_depth에 대한 RMQ 세그먼트 트리
 
 void dfs(int parent, int cur, int depth)
 {
@@ -36,11 +35,21 @@ int init(int cur, int lo, int hi)
     int mid = (lo + hi) / 2;
     int left = init(cur * 2, lo, mid);
     int right = init(cur * 2 + 1, mid + 1, hi);
-    return seg_tree[cur] = (arr[left] <= arr[right]) ? left : right;
+    return seg_tree[cur] = (serial_depth[left] < serial_depth[right]) ? left : right;
 }
 
-int query()
+int query(int cur, int lo, int hi, int l, int r)
 {
+    if (l > hi || r < lo)
+        return 0;
+    if (l <= lo && r >= hi)
+        return seg_tree[cur];
+
+    int mid = (lo + hi) / 2;
+    int left = query(cur * 2, lo, mid, l, r);
+    int right = query(cur * 2 + 1, mid + 1, hi, l, r);
+
+    return (serial_depth[left] < serial_depth[right]) ? left : right;
 }
 
 int main()
@@ -59,14 +68,20 @@ int main()
     }
 
     // 전처리
+    serial_depth[0] = INT32_MAX;
     dfs(-1, 1, 0);
-    init(1, 1, 2 * N);
+    init(1, 1, idx - 1);
 
     cin >> M;
     for (size_t i = 0; i < M; i++)
     {
         cin >> a >> b;
-        cout << serial[query()] << '\n';
+        int l = idx_to_serial[a];
+        int r = idx_to_serial[b];
+        if (l > r)
+            swap(l, r);
+
+        cout << serial[query(1, 1, idx - 1, l, r)] << '\n';
     }
 }
 
