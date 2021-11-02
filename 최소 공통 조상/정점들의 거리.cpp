@@ -4,7 +4,7 @@
 using namespace std;
 
 const int MAX_N = 40000;
-const int MAX_LOG_N = 16;
+const int MAX_LOG_N = 15;
 
 // first: node 번호, second: 거리
 vector<pair<int, int>> tree[MAX_N + 1];
@@ -25,7 +25,7 @@ void dfs(int cur, int parent, int depth, int dist)
     for (pair<int, int> &p : tree[cur])
     {
         if (p.first != parent)
-            dfs(p.first, cur, depth + 1, dist + p.second);
+            dfs(p.first, cur, depth + 1, p.second + dist);
     }
 }
 
@@ -67,9 +67,12 @@ int query(int u, int v)
                 v = parents[i][v];
             }
         }
-    }
 
-    ret -= 2 * dists[parents[u][0]];
+        ret -= 2 * dists[parents[0][u]];
+    }
+    else
+        ret -= 2 * dists[u];
+
     return ret;
 }
 
@@ -82,7 +85,7 @@ int main()
     int M;
 
     cin >> N;
-    for (size_t i = 0; i < N; i++)
+    for (size_t i = 0; i < N - 1; i++)
     {
         int u, v, dist;
         cin >> u >> v >> dist;
