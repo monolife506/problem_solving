@@ -8,30 +8,25 @@ const int MAX_N = 100001;
 const int MAX_LOG_N = 17;
 const int INF = 1000001;
 
-struct Entry
-{
-    int next = -1;
-    int min_d = INF;
-    int max_d = -1;
-};
-
 int N;
 vector<P> tree[MAX_N];
 
 int depths[MAX_N];
-Entry table[MAX_LOG_N][MAX_N];
+int parents[MAX_LOG_N][MAX_N];
+int min_dist[MAX_LOG_N][MAX_N];
+int max_dist[MAX_LOG_N][MAX_N];
 
 void dfs(int cur, int parent, int depth)
 {
     depths[cur] = depth;
-    table[0][cur].next = parent;
+    parents[0][cur] = parent;
 
     for (P &next : tree[cur])
     {
         if (next.first == parent)
         {
-            table[0][cur].min_d = next.second;
-            table[0][cur].max_d = next.second;
+            min_dist[0][cur] = next.second;
+            max_dist[0][cur] = next.second;
             continue;
         }
 
@@ -41,17 +36,27 @@ void dfs(int cur, int parent, int depth)
 
 void precompute()
 {
+    for (size_t i = 0; i < MAX_LOG_N; i++)
+    {
+        for (size_t j = 0; j < MAX_N; j++)
+        {
+            parents[i][j] = -1;
+            min_dist[i][j] = INF;
+            max_dist[i][j] = -1;
+        }
+    }
+
     dfs(1, -1, 0);
 
-    for (size_t i = 1; i <= MAX_LOG_N; i++)
+    for (size_t i = 1; i < MAX_LOG_N; i++)
     {
-        for (size_t j = 1; j <= MAX_N; j++)
+        for (size_t j = 1; j < MAX_N; j++)
         {
-            if (table[i - 1][j].next != -1)
+            if (parents[i - 1][j] != -1)
             {
-                table[i][j].next = table[i - 1][table[i - 1][j].next].next;
-                table[i][j].min_d = min(table[i - 1][j].min_d, table[i - 1][table[i - 1][j].next].min_d);
-                table[i][j].max_d = max(table[i - 1][j].max_d, table[i - 1][table[i - 1][j].next].max_d);
+                parents[i][j] = parents[i - 1][parents[i - 1][j]];
+                min_dist[i][j] = min(min_dist[i - 1][j], min_dist[i - 1][parents[i - 1][j]]);
+                max_dist[i][j] = max(max_dist[i - 1][j], max_dist[i - 1][parents[i - 1][j]]);
             }
         }
     }
@@ -65,50 +70,41 @@ P query(int d, int e)
     if (depths[d] < depths[e])
         swap(d, e);
 
-    for (int i = MAX_LOG_N; i >= 0; i--)
+    for (int i = MAX_LOG_N - 1; i >= 0; i--)
     {
         if (depths[d] - depths[e] >= (1 << i))
         {
-            cout << " (" << table[i][d].min_d << " " << table[i][d].max_d << ") ";
-            ret_min = min(ret_min, table[i][d].min_d);
-            ret_max = max(ret_max, table[i][d].max_d);
-            d = table[i][d].next;
+            ret_min = min(ret_min, min_dist[i][d]);
+            ret_max = max(ret_max, max_dist[i][d]);
+            d = parents[i][d];
         }
     }
 
     if (d == e)
         return {ret_min, ret_max};
 
-    for (int i = MAX_LOG_N; i >= 0; i--)
+    for (int i = MAX_LOG_N - 1; i >= 0; i--)
     {
-        if (table[i][d].next != -1 && table[i][d].next != table[i][e].next)
+        if (parents[i][d] != -1 && parents[i][d] != parents[i][e])
         {
-            ret_min = min(ret_min, table[i][d].min_d);
-            ret_max = max(ret_max, table[i][d].max_d);
-            cout << " (" << table[i][d].min_d << " " << table[i][d].max_d << ") ";
-            d = table[i][d].next;
-            ret_min = min(ret_min, table[i][e].min_d);
-            ret_max = max(ret_max, table[i][e].max_d);
-            cout << " (" << table[i][e].min_d << " " << table[i][e].max_d << ") ";
-            e = table[i][e].next;
+            ret_min = min(ret_min, min(min_dist[i][d], min_dist[i][e]));
+            ret_max = max(ret_max, max(max_dist[i][d], max_dist[i][e]));
+            d = parents[i][d];
+            e = parents[i][e];
         }
     }
 
-    ret_min = min(ret_min, table[0][d].min_d);
-    ret_max = max(ret_max, table[0][d].max_d);
-    cout << " (" << table[0][d].min_d << " " << table[0][d].max_d << ") ";
-    ret_min = min(ret_min, table[0][e].min_d);
-    ret_max = max(ret_max, table[0][e].max_d);
-    cout << " (" << table[0][e].min_d << " " << table[0][e].max_d << ") ";
+    ret_min = min(ret_min, min(min_dist[0][d], min_dist[0][e]));
+    ret_max = max(ret_max, max(max_dist[0][d], max_dist[0][e]));
 
     return {ret_min, ret_max};
 }
 
 int main()
 {
-    // ios::sync_with_stdio(0);
-    // cin.tie(0);
-    // cout.tie(0);
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
 
     int k;
 
@@ -129,7 +125,6 @@ int main()
         int d, e;
         cin >> d >> e;
         P ans = query(d, e);
-        cout << '\n'
-             << ans.first << " " << ans.second << '\n';
+        cout << ans.first << " " << ans.second << '\n';
     }
 }
