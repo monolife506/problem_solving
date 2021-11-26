@@ -35,51 +35,33 @@ Matrix matrixPower(const Matrix &m, int k)
 
 ll calculate()
 {
-    if (T == 1) // 예외 케이스
-        return (A[S - 1][E - 1] == 1);
-
-    ll ret = 0;
-    int node_cnt = N;
-    int last_idx = N - 1;
-
-    // 만들 행렬의 크기 먼저 계산하기
-    for (size_t i = 0; i < N - 1; i++)
-        for (size_t j = i + 1; j < N; j++)
-            if (A[i][j] > 1)
-                node_cnt += A[i][j] - 1;
-
     // dp에 사용될 행렬 만들기
-    Matrix m(node_cnt, vector<ll>(node_cnt, 0));
-    for (size_t i = 0; i < N - 1; i++)
+    Matrix m(5 * N, vector<ll>(5 * N, 0));
+
+    for (size_t i = 0; i < N; i++)
     {
-        for (size_t j = i + 1; j < N; j++)
+        for (size_t j = 0; j < N; j++)
         {
             if (A[i][j] <= 1)
             {
-                m[i][j] = m[j][i] = A[i][j];
+                m[5 * i][5 * j] = A[i][j];
                 continue;
             }
-
-            for (int k = 0; k < A[i][j] - 1; k++)
+            for (int k = 1; k < A[i][j]; k++)
             {
-                last_idx++;
+                m[5 * i + k - 1][5 * i + k] = 1;
 
-                if (k == 0)
-                    m[i][last_idx] = m[last_idx][i] = 1;
+                if (k + 1 == A[i][j])
+                    m[5 * i + k][5 * j] = 1;
                 else
-                    m[last_idx - 1][last_idx] = m[last_idx][last_idx - 1] = 1;
-
-                if (k == A[i][j] - 2)
-                    m[j][last_idx] = m[last_idx][j] = 1;
-                else
-                    m[last_idx + 1][last_idx] = m[last_idx][last_idx + 1] = 1;
+                    m[5 * i + k][5 * i + k + 1] = 1;
             }
         }
     }
 
     // 실제 값 계산하기
-    Matrix ans = matrixPower(m, T - 1);
-    return ans[E - 1][S - 1];
+    Matrix ans = matrixPower(m, T);
+    return ans[5 * (S - 1)][5 * (E - 1)];
 }
 
 int main()
@@ -105,13 +87,3 @@ int main()
 
     cout << calculate() << '\n';
 }
-
-/*
-
-0
-0
-0
-0
-
-
-*/
