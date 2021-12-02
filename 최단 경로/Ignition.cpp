@@ -1,7 +1,6 @@
 #include <cstring>
 #include <iomanip>
 #include <iostream>
-#include <vector>
 using namespace std;
 
 typedef pair<int, int> P;
@@ -11,7 +10,7 @@ const int INF = 4000001;
 
 int N, M;
 int graph[MAX_N + 1][MAX_N + 1];
-vector<pair<P, int>> edges;
+pair<P, int> edges[MAX_M];
 
 int dist[MAX_N + 1][MAX_N + 1];
 
@@ -30,22 +29,14 @@ void floyd()
 
 double getIgnitionTime(int start)
 {
-    double ret = -1;
-    for (pair<P, int> &p : edges)
+    double ret = 0;
+    for (size_t i = 0; i < M; i++)
     {
-        int u = p.first.first;
-        int v = p.first.second;
-        double w = p.second;
+        int u = edges[i].first.first;
+        int v = edges[i].first.second;
+        double w = edges[i].second;
 
-        double diff = abs(dist[start][u] - dist[start][v]);
-
-        if (diff >= w)
-        {
-            ret = max(ret, dist[start][v] + w);
-            continue;
-        }
-
-        ret = max(ret, (diff + w) / 2 + min(dist[start][u], dist[start][v]));
+        ret = max(ret, (dist[start][u] + dist[start][v] + w) / 2);
     }
 
     return ret;
@@ -66,8 +57,8 @@ int main()
     {
         int S, E, L;
         cin >> S >> E >> L;
-        graph[S][E] = graph[E][S] = (graph[S][E] == 0) ? L : min(graph[S][E], L);
-        edges.push_back(make_pair(P(S, E), L));
+        graph[S][E] = graph[E][S] = (graph[S][E] == -1) ? L : min(graph[S][E], L);
+        edges[i] = make_pair(P(S, E), L);
     }
 
     floyd();
@@ -79,4 +70,4 @@ int main()
     cout << fixed << setprecision(1) << ans << '\n';
 }
 
-// w = (n - diff) + n
+// w = (n - u) + (n - v)
