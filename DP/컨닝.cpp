@@ -110,5 +110,21 @@ int main()
     cin >> C;
     for (size_t tc = 0; tc < C; tc++)
     {
+        memset(class_map, 0, sizeof(class_map));
+        memset(cache, -1, sizeof(cache));
+
+        cin >> N >> M;
+        for (size_t i = 1; i <= N; i++)
+        {
+            char input[MAX_M + 1];
+            cin >> input;
+            for (size_t j = 0; j < M; j++)
+            {
+                if (input[j] == 'x')
+                    class_map[i] += (1 << j);
+            }
+        }
+
+        cout << solve() << '\n';
     }
 }
