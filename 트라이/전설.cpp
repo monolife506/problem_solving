@@ -1,21 +1,23 @@
 #include <algorithm>
+#include <cstring>
 #include <iostream>
+#include <map>
 #include <string>
 using namespace std;
 
-constexpr int CHILD_CNT = 26;
+bool color_len[2001]; // 특정 길이의 색깔의 존재 여부
 
 struct Trie
 {
-    Trie *child[CHILD_CNT] = {};
-    bool is_leaf = false; // 현재 글자에서 끝나는 문장 존재 여부
+    map<int, Trie *> child; // 메모리 초과 방지
+    bool is_leaf = false;   // 현재 글자에서 끝나는 문장 존재 여부
 
     ~Trie()
     {
-        for (size_t i = 0; i < CHILD_CNT; i++)
+        for (pair<const int, Trie *> &p : child)
         {
-            if (child[i] != nullptr)
-                delete child[i];
+            if (p.second != nullptr)
+                delete p.second;
         }
     }
 
@@ -34,18 +36,31 @@ struct Trie
         child[next]->insert(str, idx + 1);
     }
 
-    int find(const string &str, int idx = 0)
+    void findColor(const string &str, int idx = 0)
     {
-        if (is_leaf)
-            return idx;
+        color_len[idx] = is_leaf;
         if (idx == str.size())
-            return -1;
+            return;
 
         int next = str[idx] - 'a';
         if (child[next] == nullptr)
-            return -1;
+            return;
 
-        return child[next]->find(str, idx + 1);
+        return child[next]->findColor(str, idx + 1);
+    }
+
+    bool findName(const string &str, int idx = 0)
+    {
+        if (idx == str.size())
+            return is_leaf ? color_len[str.size() - idx] : false;
+        if (is_leaf && color_len[str.size() - idx])
+            return true;
+
+        int next = str[idx] - 'a';
+        if (child[next] == nullptr)
+            return false;
+
+        return child[next]->findName(str, idx + 1);
     }
 };
 
@@ -55,8 +70,9 @@ int main()
     cin.tie(nullptr);
     cout.tie(nullptr);
 
-    int C, N, Q;
     Trie color, nickname;
+
+    int C, N, Q;
     cin >> C >> N;
     for (size_t i = 0; i < C; i++)
     {
@@ -78,26 +94,9 @@ int main()
         string name;
         cin >> name;
 
-        int cnt1 = color.find(name);
-        if (cnt1 == -1)
-        {
-            cout << "No" << '\n';
-            continue;
-        }
-
+        memset(color_len, false, sizeof(color_len));
+        color.findColor(name);
         reverse(name.begin(), name.end());
-        int cnt2 = nickname.find(name);
-        if (cnt2 == -1)
-        {
-            cout << "No" << '\n';
-            continue;
-        }
-
-        if (cnt1 + cnt2 != name.size())
-        {
-            cout << "No" << '\n';
-            continue;
-        }
-        cout << "Yes" << '\n';
+        cout << (nickname.findName(name) ? "Yes" : "No") << '\n';
     }
 }
