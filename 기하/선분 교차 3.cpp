@@ -1,26 +1,67 @@
+#include <iomanip>
 #include <iostream>
 using namespace std;
+typedef long long ll;
 
+template <typename T>
 struct vector2
 {
-    double x, y;
-    explicit vector2(double x_ = 0, double y_ = 0) : x(x_), y(y_) {}
+    T x, y;
+    explicit vector2(T _x = 0, T _y = 0) : x(_x), y(_y) {}
 
     bool operator==(const vector2 &rhs) const { return x == rhs.x && y == rhs.y; }
     bool operator<(const vector2 &rhs) const { return x != rhs.x ? x < rhs.x : y < rhs.y; }
-
-    vector2 operator+(const vector2 &rhs) const { return vector2(x + rhs.x, y + rhs.y); }
-    vector2 operator-(const vector2 &rhs) const { return vector2(x - rhs.x, y - rhs.y); }
-    vector2 operator*(double rhs) const { return vector2(x * rhs, y * rhs); }
-
-    double dot(const vector2 &rhs) const { return x * rhs.x + y * rhs.y; }
-    double cross(const vector2 &rhs) const { return x * rhs.y - y * rhs.x; }
 };
 
-bool lineIntersection(vector2 a, vector2 b, vector2 c, vector2 d, vector2 &p);
-int parallelSegmentIntersection(vector2 a, vector2 b, vector2 c, vector2 d, vector2 &p);
-bool inBoundingRectangle(vector2 p, vector2 a, vector2 b);
-int segmentIntersection(vector2 a, vector2 b, vector2 c, vector2 d, vector2 &p);
+// 선분 (a, b)와 (c, d)의 교차 여부 확인
+// 1: 교점 존재, -1: 교선 존재, 0: 교차하지 않음
+int segmentIntersection(vector2<ll> a, vector2<ll> b, vector2<ll> c, vector2<ll> d, vector2<double> &p)
+{
+    if (b < a)
+        swap(a, b);
+    if (d < c)
+        swap(c, d);
+
+    ll divisor = (d.y - c.y) * (b.x - a.x) - (d.x - c.x) * (b.y - a.y);
+    ll t_dividend = (d.x - c.x) * (a.y - c.y) - (d.y - c.y) * (a.x - c.x);
+    ll s_dividend = (b.x - a.x) * (a.y - c.y) - (b.y - a.y) * (a.x - c.x);
+
+    if (divisor == 0) // 두 선분이 평행한 경우
+    {
+        if (t_dividend == 0 && s_dividend == 0) // 두 직선은 일치함
+        {
+            if (b < c || d < a)
+                return 0; // 두 선분은 만나지 않음
+
+            if (b == c)
+            {
+                p.x = b.x;
+                p.y = b.y;
+                return 1; // 두 선분은 점 b에서 만남
+            }
+            if (a == d)
+            {
+                p.x = a.x;
+                p.y = a.y;
+                return 1; // 두 선분은 점 a에서 만남
+            }
+
+            return -1; // 두 선분은 서로 겹침
+        }
+
+        return 0; // 두 직선이 일치하지 않아 교점이 존재하지 않음
+    }
+
+    double t = (double)t_dividend / divisor;
+    double s = (double)s_dividend / divisor;
+
+    if (t < 0.0 || t > 1.0 || s < 0.0 || s > 1.0)
+        return 0; // 교점이 선분 밖 직선 위에 존재함
+
+    p.x = a.x + t * (b.x - a.x);
+    p.y = a.y + t * (b.y - a.y);
+    return 1; // 선분 사이에 교점이 존재함
+}
 
 int main()
 {
@@ -28,33 +69,14 @@ int main()
     cin.tie(nullptr);
     cout.tie(nullptr);
 
-    vector2 a, b, c, d, p;
+    vector2<ll> a, b, c, d;
     cin >> a.x >> a.y >> b.x >> b.y;
     cin >> c.x >> c.y >> d.x >> d.y;
-}
 
-// (a, b)를 포함하는 직선과 (c, d)를 포함하는 직선이 교차하는지 확인하고 교점을 p에 반환
-// false일 경우 두 직선의 기울기는 같음
-bool lineIntersection(vector2 a, vector2 b, vector2 c, vector2 d, vector2 &p)
-{
-}
+    vector2<double> p;
+    int flag = segmentIntersection(a, b, c, d, p);
+    cout << abs(flag) << '\n';
 
-// 선분 (a, b), (c, d)의 기울기가 같을 때 교점이 1개인 경우 교점을 p에 반환
-// 0: 교점 없음, 1: 교점 1개, -1: 교점이 무한히 많음
-int parallelSegmentIntersection(vector2 a, vector2 b, vector2 c, vector2 d, vector2 &p)
-{
-}
-
-// 선분 (a, b)를 대각선으로 하는 직사각형 내에 점 p가 존재하는지 확인
-// 직선을 구할 때 p는 대각선을 일부로 하는 직선 위 점이므로 이 직사각형 내 존재하면 p는 (a, b) 위에 존재함
-bool inBoundingRectangle(vector2 p, vector2 a, vector2 b)
-{
-}
-
-// 선분 (a, b), (c, d)이 교차하는지 확인하고 교점이 1개인 경우 교점을 p에 반환
-// 0: 교점 없음, 1: 교점 1개, -1: 교점이 무한히 많음
-int segmentIntersection(vector2 a, vector2 b, vector2 c, vector2 d, vector2 &p)
-{
-    if (!lineIntersection(a, b, c, d, p))
-        return parallelSegmentIntersection(a, b, c, d, p);
+    if (flag == 1)
+        cout << setprecision(10) << p.x << " " << p.y << '\n';
 }
