@@ -1,36 +1,40 @@
-// 11401번: 이항 계수 3
-
-#define MOD_P 1'000'000'007
 #include <iostream>
-#include <array>
 using namespace std;
-typedef unsigned long long ll;
 
-array<int, 4'000'000 + 1> fac;
+typedef long long ll;
+const int MOD = 1'000'000'007;
+const int MAX_N = 4'000'000;
 
-ll pow_mod(ll A, ll B)
+ll fac[MAX_N + 1];
+
+ll pow(ll a, ll b)
 {
-    if (B == 1)
-        return A % MOD_P;
-    ll sum = (pow_mod(A, B / 2) * pow_mod(A, B / 2)) % MOD_P;
-    return (B % 2) ? ((A % MOD_P) * sum) % MOD_P : sum;
+    if (b == 1)
+        return a % MOD;
+
+    ll half = pow(a, b / 2);
+    ll ret = (half * half) % MOD;
+    return (b % 2 == 1) ? (ret * (a % MOD)) % MOD : ret;
 }
 
-ll ans(ll N, ll K)
+ll combination(int n, int k)
 {
-    ll total = (pow_mod(fac[K], MOD_P - 2) * pow_mod(fac[N - K], MOD_P - 2)) % MOD_P;
-    total = (total * fac[N]) % MOD_P;
-    return total;
+    ll ret = fac[n];
+    ret = (ret * (pow(fac[k], MOD - 2) % MOD)) % MOD;
+    ret = (ret * (pow(fac[n - k], MOD - 2) % MOD)) % MOD;
+    return ret;
 }
 
 int main()
 {
-    ll N, K;
-    cin >> N >> K;
+    int n, k;
+    cin >> n >> k;
+
     fac[0] = 1;
-    for (size_t i = 1; i <= N; i++)
-        fac[i] = (fac[i - 1] * i) % MOD_P; // N < P
-    cout << ans(N, K);
+    for (ll i = 1; i <= n; i++)
+        fac[i] = (fac[i - 1] * (i % MOD)) % MOD;
+
+    cout << combination(n, k) << '\n';
 }
 
 // 페르마의 소정리를 이용한 곱셈의 역원
