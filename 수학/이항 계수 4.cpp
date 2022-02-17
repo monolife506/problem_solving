@@ -1,66 +1,58 @@
-// 11402번: 이항 계수 4
-
 #include <iostream>
-#include <queue>
-#include <array>
 using namespace std;
-typedef unsigned long long ll;
+typedef long long ll;
 
-struct Comb
-{
-    ll n;
-    ll k;
-};
+int M, fac[2001];
 
-queue<Comb> Q;
-array<ll, 2000 + 1> fac;
-ll pow_mod(ll A, ll B, ll C)
+int pow(int a, int b)
 {
-    if (B == 1)
-        return A % C;
-    ll total = (pow_mod(A, B / 2, C) * pow_mod(A, B / 2, C)) % C;
-    return (B % 2) ? (total * (A % C)) % C : total;
+    if (b == 0)
+        return 1;
+    if (b == 1)
+        return a % M;
+
+    int half = pow(a, b / 2);
+    int ret = (half * half) % M;
+    return (b % 2 == 0) ? ret : (ret * (a % M)) % M;
 }
 
-ll comb_mod(Comb C, ll P)
+int combination(int n, int k)
 {
-    if (C.k > C.n)
-        return 0;
-
-    ll mod = (pow_mod(fac[C.k], P - 2, P) * pow_mod(fac[C.n - C.k], P - 2, P)) % P;
-    mod = (mod * fac[C.n]) % P;
-    return mod;
+    int ret = fac[n];
+    ret = (ret * pow(fac[k], M - 2)) % M;
+    ret = (ret * pow(fac[n - k], M - 2)) % M;
+    return ret;
 }
 
 int main()
 {
-    ll M, limit;
-    Comb input;
-    cin >> input.n >> input.k >> M;
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
 
-    limit = input.n;
-    for (ll i = 1; i <= limit; i *= M)
-    {
-        ll N, K;
-        N = input.n % M;
-        K = input.k % M;
-        input.n /= M;
-        input.k /= M;
-        Q.push({N, K});
-    }
+    ll N, K;
+    cin >> N >> K >> M;
 
     fac[0] = 1;
-    for (size_t i = 1; i <= 2000; i++)
+    for (int i = 1; i <= M; ++i)
         fac[i] = (fac[i - 1] * (i % M)) % M;
 
-    ll ans = 1;
-    while (!Q.empty())
+    int ans = 1;
+    while (N != 0)
     {
-        Comb output = Q.front();
-        ans = (ans * comb_mod(output, M)) % M;
-        Q.pop();
+        ans *= combination(N % M, K % M);
+        ans %= M;
+        N /= M;
+        K /= M;
     }
-    cout << ans;
+
+    cout << ans << '\n';
 }
 
-// 뤼카의 정리 : https://en.wikipedia.org/wiki/Lucas%27s_theorem
+/*
+
+1445 = 206 * 7 + 3
+206 = 29 * 7 + 3
+29 = 4 * 7 + 1
+4
+*/
