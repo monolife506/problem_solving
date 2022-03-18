@@ -7,11 +7,11 @@ struct LazySegmentTree
 {
     ll *tree, *lazy;
 
-    LazySegmentTree(size_t n, const vector<int> &v)
+    LazySegmentTree(size_t n, const vector<ll> &v)
     {
         tree = new ll[n * 4];
         lazy = new ll[n * 4];
-        init(1, 1, n, v);
+        init(1, 0, n - 1, v);
     }
 
     ~LazySegmentTree()
@@ -20,7 +20,7 @@ struct LazySegmentTree
         delete[] lazy;
     }
 
-    void init(int cur, int l, int r, const vector<int> &v)
+    void init(int cur, int l, int r, const vector<ll> &v)
     {
         if (l == r)
         {
@@ -44,11 +44,11 @@ struct LazySegmentTree
             lazy[cur * 2 + 1] += lazy[cur];
         }
 
-        tree[cur] += (r - l + 1) * lazy[cur];
+        tree[cur] += lazy[cur] * (r - l + 1);
         lazy[cur] = 0;
     }
 
-    void update(int cur, int l, int r, int L, int R, int val)
+    void update(int cur, int l, int r, int L, int R, ll val)
     {
         propagate(cur, l, r);
 
@@ -89,8 +89,8 @@ int main()
     size_t N, M, K;
     cin >> N >> M >> K;
 
-    vector<int> v(N + 1);
-    for (size_t i = 1; i <= N; ++i)
+    vector<ll> v(N);
+    for (size_t i = 0; i < N; ++i)
         cin >> v[i];
 
     LazySegmentTree tree(N, v);
@@ -102,13 +102,13 @@ int main()
         {
             ll b, c, d;
             cin >> b >> c >> d;
-            tree.update(1, 1, N, b, c, d);
+            tree.update(1, 0, N - 1, b - 1, c - 1, d);
         }
         else // a == 2
         {
             ll b, c;
             cin >> b >> c;
-            cout << tree.get_val(1, 1, N, b, c) << '\n';
+            cout << tree.get_val(1, 0, N - 1, b - 1, c - 1) << '\n';
         }
     }
 }
