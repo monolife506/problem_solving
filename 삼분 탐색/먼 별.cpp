@@ -7,7 +7,7 @@ typedef long long ll;
 struct Vector2
 {
     int x, y;
-    explicit Vector2(int x = 0, int y = 0) : x(x), y(y) {}
+    explicit Vector2(int x, int y) : x(x), y(y) {}
     Vector2 operator-(const Vector2 &rhs)
     {
         return Vector2(x - rhs.x, y - rhs.y);
@@ -23,6 +23,9 @@ struct Vector2
         return 1LL * (x - rhs.x) * (x - rhs.x) + 1LL * (y - rhs.y) * (y - rhs.y);
     }
 };
+
+size_t N, T;
+int x[30000], y[30000], dx[30000], dy[30000];
 
 void convex_hull(vector<Vector2> &points, vector<Vector2> &hull)
 {
@@ -52,8 +55,12 @@ void convex_hull(vector<Vector2> &points, vector<Vector2> &hull)
     }
 }
 
-pair<Vector2, Vector2> rotating_calipers(vector<Vector2> &points)
+ll rotating_calipers(int t)
 {
+    vector<Vector2> points;
+    for (size_t i = 0; i < N; ++i)
+        points.push_back(Vector2(x[i] + dx[i] * t, y[i] + dy[i] * t));
+
     vector<Vector2> hull;
     convex_hull(points, hull);
 
@@ -66,8 +73,7 @@ pair<Vector2, Vector2> rotating_calipers(vector<Vector2> &points)
             pr = i;
     }
 
-    ll max_dist = hull[pl].dist(hull[pr]);
-    size_t ret1 = pl, ret2 = pr;
+    ll ret = hull[pl].dist(hull[pr]);
     for (size_t i = 0; i <= hull.size(); ++i)
     {
         size_t nxt_pl = (pl + 1) % hull.size();
@@ -77,16 +83,35 @@ pair<Vector2, Vector2> rotating_calipers(vector<Vector2> &points)
         else
             pr = nxt_pr;
 
-        ll dist = hull[pl].dist(hull[pr]);
-        if (dist > max_dist)
-        {
-            max_dist = dist;
-            ret1 = pl;
-            ret2 = pr;
-        }
+        ret = max(ret, hull[pl].dist(hull[pr]));
     }
 
-    return {hull[ret1], hull[ret2]};
+    return ret;
+}
+
+pair<int, ll> ternary_search()
+{
+    int l = 0;
+    int r = T;
+    while (r - l >= 3)
+    {
+        int p = (l * 2 + r) / 3;
+        int q = (l + r * 2) / 3;
+        if (rotating_calipers(p) > rotating_calipers(q))
+            l = p;
+        else
+            r = q;
+    }
+
+    pair<int, ll> ret = {-1, INT64_MAX};
+    for (int i = l; i <= r; ++i)
+    {
+        ll dist = rotating_calipers(i);
+        if (ret.second > dist)
+            ret = {i, dist};
+    }
+
+    return ret;
 }
 
 int main()
@@ -95,19 +120,11 @@ int main()
     cin.tie(nullptr);
     cout.tie(nullptr);
 
-    size_t T;
-    cin >> T;
-    for (size_t tc = 0; tc < T; ++tc)
-    {
-        size_t N;
-        cin >> N;
+    cin >> N >> T;
+    for (size_t i = 0; i < N; ++i)
+        cin >> x[i] >> y[i] >> dx[i] >> dy[i];
 
-        vector<Vector2> points(N);
-        for (size_t i = 0; i < N; ++i)
-            cin >> points[i].x >> points[i].y;
-
-        pair<Vector2, Vector2> ans = rotating_calipers(points);
-        cout << ans.first.x << " " << ans.first.y << " "
-             << ans.second.x << " " << ans.second.y << '\n';
-    }
+    pair<int, ll> ans = ternary_search();
+    cout << ans.first << '\n'
+         << ans.second << '\n';
 }
