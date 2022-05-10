@@ -1,63 +1,51 @@
-// 1967번: 트리의 지름
-// 지름은 루트나 리프 노드간의 거리 중의 최댓값이다.
-
 #include <iostream>
 #include <vector>
 using namespace std;
 typedef pair<int, int> P;
 
-struct Node
+vector<P> tree[10001];
+int max_len[10001]; // max_len[i]: i번 노트를 루트로 하는 서브트리의 최대 지름
+
+int dfs(int cur)
 {
-    P parent = P(-1, 0); // 부모의 번호, 가중치
-    vector<P> child;
+    if (tree[cur].empty())
+        return 0;
 
-    void setParent(int parent = -1, int weight = -1) { this->parent = P(parent, weight); }
-    void addChild(int child, int weight)
+    int first = 0, second = 0;
+    for (P &p : tree[cur])
     {
-        this->child.push_back(P(child, weight));
-    }
-};
-
-Node tree[10001];
-int maxDist = 0;
-
-int calculate(int cur)
-{
-    if (tree[cur].child.empty()) // Base Case
-        return tree[cur].parent.second;
-
-    int first = 0;
-    int second = 0;
-    for (P &child : tree[cur].child)
-    {
-        int returnVal = calculate(child.first);
-        if (first < returnVal)
+        int len = dfs(p.first) + p.second;
+        if (len > first)
         {
             second = first;
-            first = returnVal;
+            first = len;
         }
-        else if (second < returnVal)
+        else if (len > second)
         {
-            second = returnVal;
+            second = len;
         }
     }
 
-    maxDist = max(maxDist, first + second);
-    return first + tree[cur].parent.second;
+    max_len[cur] = first + second;
+    return first;
 }
 
 int main()
 {
-    int N;
-    cin >> N;
-    for (size_t i = 0; i < N - 1; i++)
+    int n;
+    cin >> n;
+    for (int i = 0; i < n - 1; ++i)
     {
-        int parent, child, weight;
-        cin >> parent >> child >> weight;
-        tree[parent].addChild(child, weight);
-        tree[child].setParent(parent, weight);
+        int parent, child, w;
+        cin >> parent >> child >> w;
+        tree[parent].push_back({child, w});
     }
 
-    calculate(1);
-    cout << maxDist;
+    dfs(1);
+
+    int ans = 0;
+    for (int i = 1; i <= n; ++i)
+        ans = max(ans, max_len[i]);
+
+    cout << ans << '\n';
 }
