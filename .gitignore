@@ -1,6 +1,6 @@
 /.vscode
 /.vs
-compiled.out
+compiled
 compiled.exe
 *.obj
 *.ilk
