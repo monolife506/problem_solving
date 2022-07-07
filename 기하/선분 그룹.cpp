@@ -5,8 +5,8 @@ typedef pair<ll, ll> P;
 
 struct Line
 {
-    P startP; // 시작점
-    P endP;   // 끝점
+    P s; // 시작점
+    P e; // 끝점
     int root = -1;
 };
 
@@ -22,17 +22,17 @@ int ccw(const P &A, const P &B, const P &C)
 
 bool checkcross(Line &A, Line &B)
 {
-    int flag1 = ccw(A.startP, A.endP, B.startP) * ccw(A.startP, A.endP, B.endP);
-    int flag2 = ccw(B.startP, B.endP, A.startP) * ccw(B.startP, B.endP, A.endP);
+    int flag1 = ccw(A.s, A.e, B.s) * ccw(A.s, A.e, B.e);
+    int flag2 = ccw(B.s, B.e, A.s) * ccw(B.s, B.e, A.e);
 
     if (flag1 == 0 && flag2 == 0)
     {
-        if (A.startP > A.endP)
-            swap(A.startP, A.endP);
-        if (B.startP > B.endP)
-            swap(B.startP, B.endP);
+        if (A.s > A.e)
+            swap(A.s, A.e);
+        if (B.s > B.e)
+            swap(B.s, B.e);
 
-        return (B.startP <= A.endP) && (A.startP <= B.endP);
+        return (B.s <= A.e) && (A.s <= B.e);
     }
 
     return (flag1 <= 0) && (flag2 <= 0);
@@ -70,8 +70,8 @@ int main()
     cin >> N;
     for (size_t i = 0; i < N; i++)
     {
-        cin >> arr[i].startP.first >> arr[i].startP.second >>
-            arr[i].endP.first >> arr[i].endP.second;
+        cin >> arr[i].s.first >> arr[i].s.second >>
+            arr[i].e.first >> arr[i].e.second;
     }
 
     for (size_t i = 0; i < N; i++)
