@@ -1,0 +1,2 @@
+year = input()
+print("A")
