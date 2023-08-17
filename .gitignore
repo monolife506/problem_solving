@@ -1,8 +1,8 @@
 /.vscode
 /.vs
 /출제
-compiled
 compiled.exe
+compiled.out
 *.obj
 *.ilk
 *.pdb
