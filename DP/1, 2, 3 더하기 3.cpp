@@ -1,38 +1,38 @@
-#include <iostream>
+#include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
 
 const ll MOD = 1e9 + 9;
-ll cache[1000001];
+ll dp[1000001];
+
+ll f(int cur)
+{
+    if (cur == 1)
+        return 1;
+    if (cur == 2)
+        return 2;
+    if (cur == 3)
+        return 4;
+    if (dp[cur] != -1)
+        return dp[cur];
+
+    return dp[cur] = (f(cur - 1) + f(cur - 2) + f(cur - 3)) % MOD;
+}
 
 int main()
 {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
     cout.tie(nullptr);
+    memset(dp, -1, sizeof(dp));
 
-    cache[1] = 1;
-    cache[2] = 2;
-    cache[3] = 4;
-    for (int i = 4; i <= 1000000; ++i)
-    {
-        if (i - 1 >= 1)
-            cache[i] += cache[i - 1];
-        if (i - 2 >= 1)
-            cache[i] += cache[i - 2];
-        if (i - 3 >= 1)
-            cache[i] += cache[i - 3];
-
-        cache[i] %= MOD;
-    }
-
-    int T;
-    cin >> T;
-    for (int tc = 0; tc < T; ++tc)
+    int t;
+    cin >> t;
+    for (int tc = 0; tc < t; ++tc)
     {
         int n;
         cin >> n;
 
-        cout << cache[n] << '\n';
+        cout << f(n) << '\n';
     }
 }
