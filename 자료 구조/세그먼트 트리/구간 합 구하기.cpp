@@ -1,67 +1,89 @@
-#include <iostream>
+#include <bits/stdc++.h>
+#define endl '\n'
+// #define FILE_RW
 using namespace std;
-typedef long long ll;
 
-ll arr[1000001];
-ll tree[1 << 21]; // height(H) <= H * 4
+using ll = long long;
+using pii = pair<int, int>;
+using pll = pair<ll, ll>;
 
-ll init(int cur, int start, int end)
+struct SegTree
 {
-    if (start == end)
-        return tree[cur] = arr[start];
+    vector<ll> tree;
 
-    int mid = (start + end) / 2;
-    ll left_sum = init(cur * 2, start, mid);
-    ll right_sum = init(cur * 2 + 1, mid + 1, end);
-    return tree[cur] = left_sum + right_sum;
-}
+    SegTree(int n)
+    {
+        tree.resize(n * 4, 0);
+    }
 
-ll sum(int cur, int start, int end, int left, int right)
+    void update(int cur, int l, int r, int idx, ll val)
+    {
+        if (idx < l || idx > r)
+            return;
+
+        if (l == r)
+        {
+            tree[cur] = val;
+            return;
+        }
+
+        update(cur * 2, l, (l + r) / 2, idx, val);
+        update(cur * 2 + 1, (l + r) / 2 + 1, r, idx, val);
+
+        tree[cur] = tree[cur * 2] + tree[cur * 2 + 1];
+    }
+
+    ll query(int cur, int l, int r, int L, int R)
+    {
+        if (l > R || r < L)
+            return 0;
+        if (L <= l && r <= R)
+            return tree[cur];
+
+        return query(cur * 2, l, (l + r) / 2, L, R) +
+               query(cur * 2 + 1, (l + r) / 2 + 1, r, L, R);
+    }
+};
+
+void solve()
 {
-    if (left > end || right < start)
-        return 0;
-    if (left <= start && end <= right)
-        return tree[cur];
+    int n, m, k;
+    cin >> n >> m >> k;
 
-    int mid = (start + end) / 2;
-    ll left_sum = sum(cur * 2, start, mid, left, right);
-    ll right_sum = sum(cur * 2 + 1, mid + 1, end, left, right);
-    return left_sum + right_sum;
-}
+    SegTree st(n);
+    for (int i = 1; i <= n; ++i)
+    {
+        ll val;
+        cin >> val;
+        st.update(1, 1, n, i, val);
+    }
 
-void update(int cur, int start, int end, int idx, ll diff)
-{
-    if (idx < start || idx > end)
-        return;
+    for (int qi = 0; qi < m + k; ++qi)
+    {
+        ll a, b, c;
+        cin >> a >> b >> c;
 
-    tree[cur] += diff;
-    if (start != end) {
-        int mid = (start + end) / 2;
-        update(cur * 2, start, mid, idx, diff);
-        update(cur * 2 + 1, mid + 1, end, idx, diff);
+        if (a == 1)
+        {
+            st.update(1, 1, n, b, c);
+        }
+        else // a == 2
+        {
+            cout << st.query(1, 1, n, b, c) << endl;
+        }
     }
 }
 
 int main()
 {
-    ios::sync_with_stdio(0);
-    cin.tie(0);
-    cout.tie(0);
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
 
-    ll N, M, K;
-    cin >> N >> M >> K;
-    for (size_t i = 0; i < N; i++)
-        cin >> arr[i];
+#ifdef FILE_RW
+    freopen("local.in", "r", stdin);
+    freopen("local.out", "w", stdout);
+#endif
 
-    init(1, 0, N - 1);
-    for (size_t i = 0; i < M + K; i++) {
-        ll a, b, c;
-        cin >> a >> b >> c;
-        if (a == 1) {
-            update(1, 0, N - 1, b - 1, c - arr[b - 1]);
-            arr[b - 1] = c;
-        } else {
-            cout << sum(1, 0, N - 1, b - 1, c - 1) << '\n';
-        }
-    }
+    solve();
 }

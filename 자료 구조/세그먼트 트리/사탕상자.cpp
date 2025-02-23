@@ -1,78 +1,117 @@
-#include <iostream>
-#include <vector>
+#include <bits/stdc++.h>
+#define endl '\n'
+// #define FILE_RW
 using namespace std;
 
-const int MAX = 1000000;
+using ll = long long;
+using pii = pair<int, int>;
+using pll = pair<ll, ll>;
 
-class SegmentTree
+struct SegTree
 {
-private:
-    int n = MAX + 1; // 저장한 값의 개수
-    vector<int> vec; // 세그먼트 트리의 정보를 저장하는 vector
+    vector<ll> tree;
 
-    int kth(int cur, int lo, int hi, int k)
+    SegTree(int n)
     {
-        if (lo == hi)
-            return lo;
-
-        int mid = (lo + hi) / 2;
-        int left_cnt = vec[cur * 2];
-
-        if (k <= left_cnt) // k번째 수에 포함되지 않은 경우
-            return kth(cur * 2, lo, mid, k);
-
-        return kth(cur * 2 + 1, mid + 1, hi, k - left_cnt);
+        tree.resize(n * 4, 0);
     }
 
-    void update(int cur, int lo, int hi, int idx, int val)
+    void update(int cur, int l, int r, int idx, int val)
     {
-        if (idx < lo || idx > hi)
+        if (idx < l || idx > r)
             return;
 
-        vec[cur] += val;
-        if (lo != hi)
+        if (l == r)
         {
-            int mid = (lo + hi) / 2;
-            update(cur * 2, lo, mid, idx, val);
-            update(cur * 2 + 1, mid + 1, hi, idx, val);
+            tree[cur] += val;
+            return;
+        }
+
+        update(cur * 2, l, (l + r) / 2, idx, val);
+        update(cur * 2 + 1, (l + r) / 2 + 1, r, idx, val);
+
+        tree[cur] = tree[cur * 2] + tree[cur * 2 + 1];
+    }
+
+    ll query(int cur, int l, int r, int L, int R)
+    {
+        if (l > R || r < L)
+            return 0;
+        if (L <= l && r <= R)
+            return tree[cur];
+
+        return query(cur * 2, l, (l + r) / 2, L, R) +
+               query(cur * 2 + 1, (l + r) / 2 + 1, r, L, R);
+    }
+};
+
+int psearch(int k, SegTree &st)
+{
+    int l = 1;
+    int r = 1'000'000;
+    int mid, ans;
+
+    while (l <= r)
+    {
+        mid = (l + r) / 2;
+        if (st.query(1, 1, 1'000'000, 1, mid) >= k)
+        {
+            ans = mid;
+            r = mid - 1;
+        }
+        else
+        {
+            l = mid + 1;
         }
     }
 
-public:
-    explicit SegmentTree() : vec(4 * n, 0) {}
+    return ans;
+}
 
-    // k번째 값 얻기 + k번째 값 지우기
-    int kth(int k) { return kth(1, 1, n, k); }
-
-    // 특정 순위의 값 수정하기
-    void update(int idx, int val) { update(1, 1, n, idx, val); }
-};
-
-int main()
+void solve()
 {
-    ios::sync_with_stdio(0);
-    cin.tie(0);
-    cout.tie(0);
-
     int n;
     cin >> n;
 
-    SegmentTree tree = SegmentTree();
-    for (size_t i = 0; i < n; i++)
+    SegTree st(1'000'000);
+    for (int qi = 0; qi < n; ++qi)
     {
-        int A, B, C;
-        cin >> A >> B;
+        int a, b;
+        cin >> a >> b;
 
-        if (A == 1) // query
+        if (a == 1)
         {
-            int idx = tree.kth(B);
-            cout << idx << '\n';
-            tree.update(idx, -1);
+            int val = psearch(b, st);
+            st.update(1, 1, 1'000'000, val, -1);
+
+            cout << val << endl;
         }
-        else // update
+        else // a == 2
         {
-            cin >> C;
-            tree.update(B, C);
+            int c;
+            cin >> c;
+            st.update(1, 1, 1'000'000, b, c);
         }
     }
 }
+
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+#ifdef FILE_RW
+    freopen("local.in", "r", stdin);
+    freopen("local.out", "w", stdout);
+#endif
+
+    solve();
+}
+
+/*
+
+일차함수로 증가/감소하는 값에 대해서
+어떤 상한/하한이 존재
+
+*/

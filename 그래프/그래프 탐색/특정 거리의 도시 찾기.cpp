@@ -1,21 +1,16 @@
-#include <cstring>
-#include <iostream>
-#include <queue>
-#include <vector>
+#include <bits/stdc++.h>
 using namespace std;
 
-const int INF = 987654321;
-
-int N, M, K, X, dist[300001];
+int n, m, k, x, dist[300001];
 vector<int> graph[300001];
 
 void bfs()
 {
     queue<int> q;
-    q.push(X);
+    q.push(x);
 
     memset(dist, -1, sizeof(dist));
-    dist[X] = 0;
+    dist[x] = 0;
 
     while (!q.empty())
     {
@@ -39,25 +34,26 @@ int main()
     cin.tie(nullptr);
     cout.tie(nullptr);
 
-    cin >> N >> M >> K >> X;
-    for (int i = 0; i < M; ++i)
+    cin >> n >> m >> k >> x;
+    for (int i = 0; i < m; ++i)
     {
-        int A, B;
-        cin >> A >> B;
-        graph[A].push_back(B);
+        int a, b;
+        cin >> a >> b;
+        graph[a].push_back(b);
     }
 
     bfs();
 
     bool flag = false;
-    for (int i = 1; i <= N; ++i)
+    for (int i = 1; i <= n; ++i)
     {
-        if (dist[i] == K)
+        if (dist[i] == k)
         {
             flag = true;
             cout << i << '\n';
         }
     }
+
     if (!flag)
     {
         cout << -1 << '\n';

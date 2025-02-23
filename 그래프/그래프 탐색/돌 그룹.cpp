@@ -1,64 +1,63 @@
-#include <algorithm>
-#include <iostream>
-#include <queue>
-#include <vector>
+#include <bits/stdc++.h>
+#define endl '\n'
+// #define FILE_RW
 using namespace std;
 
-bool visited[501][501][501];
+using ll = long long;
+using pii = pair<int, int>;
+using pll = pair<ll, ll>;
 
-bool bfs(vector<int> start)
+int dist[501][501][501];
+
+int bfs(int a, int b, int c)
 {
-    queue<vector<int>> q;
-    sort(start.begin(), start.end());
-    q.push(start);
-    visited[start[0]][start[1]][start[2]] = true;
+    queue<pair<int, pii>> q;
+    q.push({a, {b, c}});
+    dist[a][b][c] = 0;
 
     while (!q.empty())
     {
-        vector<int> cur = q.front(), nxt;
+        int cur_a = q.front().first;
+        int cur_b = q.front().second.first;
+        int cur_c = q.front().second.second;
         q.pop();
 
-        if (cur[0] == cur[1] && cur[1] == cur[2])
-            return true;
+        if (cur_a != cur_b)
+        {
+            if (cur_a > cur_b &&)
+            {
+            }
+            else
+            {
+            }
+        }
 
-        if (cur[0] != cur[1])
+        if (cur_b != cur_c)
         {
-            nxt = {cur[0] * 2, cur[1] - cur[0], cur[2]};
-            sort(nxt.begin(), nxt.end());
-            if (!visited[nxt[0]][nxt[1]][nxt[2]])
-            {
-                q.push(nxt);
-                visited[nxt[0]][nxt[1]][nxt[2]] = true;
-            }
         }
-        if (cur[0] != cur[2])
+
+        if (cur_c != cur_a)
         {
-            nxt = {cur[0] * 2, cur[1], cur[2] - cur[0]};
-            sort(nxt.begin(), nxt.end());
-            if (!visited[nxt[0]][nxt[1]][nxt[2]])
-            {
-                q.push(nxt);
-                visited[nxt[0]][nxt[1]][nxt[2]] = true;
-            }
-        }
-        if (cur[1] != cur[2])
-        {
-            nxt = {cur[0], cur[1] * 2, cur[2] - cur[1]};
-            sort(nxt.begin(), nxt.end());
-            if (!visited[nxt[0]][nxt[1]][nxt[2]])
-            {
-                q.push(nxt);
-                visited[nxt[0]][nxt[1]][nxt[2]] = true;
-            }
         }
     }
+}
 
-    return false;
+void solve()
+{
+    int a, b, c;
+    cin >> a >> b >> c;
 }
 
 int main()
 {
-    vector<int> start(3);
-    cin >> start[0] >> start[1] >> start[2];
-    cout << bfs(start) << '\n';
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+#ifdef FILE_RW
+    freopen("local.in", "r", stdin);
+    freopen("local.out", "w", stdout);
+#endif
+
+    solve();
 }

@@ -1,86 +1,91 @@
-// 11779번: 최소비용 구하기 2
-
-#include <iostream>
-#include <stack>
-#include <queue>
-#include <vector>
-#include <cstring>
+#include <bits/stdc++.h>
+#define endl '\n'
+// #define FILE_RW
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> P;
+using ll = long long;
+using pii = pair<int, int>;
+using pll = pair<ll, ll>;
 
-int N, M;
-int start, target, weight;
-vector<P> graph[1001];
+const ll INF = 1e18;
 
+vector<pii> graph[1001];
 ll dist[1001];
 int pre[1001];
-bool visited[1001];
 
-void dijkstra()
+void dijkstra(int start)
 {
-    priority_queue<P, vector<P>, greater<P>> pq;
-    dist[start] = 0;
-    pq.push(P(0, start));
+    priority_queue<pii, vector<pii>, greater<pii>> pq;
+    fill_n(&dist[0], 1001, INF);
+    memset(pre, -1, sizeof(pre));
+    pq.push({dist[start] = 0, start});
 
     while (!pq.empty())
     {
-        int cur;
-        do
+        int cur_d = pq.top().first;
+        int cur = pq.top().second;
+        pq.pop();
+
+        if (cur_d > dist[cur])
+            continue;
+
+        for (auto [nxt, w] : graph[cur])
         {
-            cur = pq.top().second;
-            pq.pop();
-        } while (!pq.empty() && visited[cur]);
-
-        if (visited[cur])
-            break;
-
-        visited[cur] = true;
-        for (auto &p : graph[cur])
-        {
-            int next = p.first;
-            int weight = p.second;
-
-            if (dist[cur] + weight < dist[next] || dist[next] == -1)
+            if (dist[nxt] > dist[cur] + w)
             {
-                dist[next] = dist[cur] + weight;
-                pre[next] = cur;
-
-                if (!visited[next])
-                    pq.push(P(dist[next], next));
+                pq.push({dist[nxt] = dist[cur] + w, nxt});
+                pre[nxt] = cur;
             }
         }
     }
 }
 
+void solve()
+{
+    int n, m;
+    cin >> n >> m;
+    for (int i = 0; i < m; ++i)
+    {
+        int u, v, w;
+        cin >> u >> v >> w;
+        graph[u].push_back({v, w});
+    }
+
+    int s, t;
+    cin >> s >> t;
+
+    dijkstra(s);
+
+    cout << dist[t] << endl;
+
+    int cur = t;
+    stack<int> st;
+    while (cur != -1)
+    {
+        st.push(cur);
+        cur = pre[cur];
+    }
+
+    cout << st.size() << endl;
+    while (!st.empty())
+    {
+        cout << st.top() << " ";
+        st.pop();
+    }
+
+    cout << endl;
+}
+
 int main()
 {
-    memset(dist, -1, sizeof(dist));
-    memset(pre, -1, sizeof(pre));
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
 
-    cin >> N >> M;
-    for (size_t i = 0; i < M; i++)
-    {
-        cin >> start >> target >> weight;
-        graph[start].push_back(P(target, weight));
-    }
-    cin >> start >> target;
+#ifdef FILE_RW
+    freopen("local.in", "r", stdin);
+    freopen("local.out", "w", stdout);
+#endif
 
-    dijkstra();
-    cout << dist[target] << '\n';
-
-    stack<int> path;
-    while (target != -1)
-    {
-        path.push(target);
-        target = pre[target];
-    }
-
-    cout << path.size() << '\n';
-    while (!path.empty())
-    {
-        cout << path.top() << " ";
-        path.pop();
-    }
+    solve();
 }

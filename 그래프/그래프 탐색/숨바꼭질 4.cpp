@@ -1,74 +1,82 @@
-// 13913번: 숨바꼭질 4
-
-#include <iostream>
-#include <stack>
-#include <queue>
-#include <cstring>
+#include <bits/stdc++.h>
+#define endl '\n'
+// #define FILE_RW
 using namespace std;
 
-int cnt[200001];
-int preN[200001];
+using ll = long long;
+using pii = pair<int, int>;
+using pll = pair<ll, ll>;
 
-struct P
+int n, dist[200001], pre[200001];
+
+void bfs(int start)
 {
-    int now;
-    int sec;
-    int pre;
+    queue<int> q;
+    memset(dist, -1, sizeof(dist));
+    memset(pre, -1, sizeof(pre));
 
-    P(int now, int sec, int pre)
+    q.push(start);
+    dist[start] = 0;
+
+    while (!q.empty())
     {
-        this->now = now;
-        this->sec = sec;
-        this->pre = pre;
-    }
-};
+        int cur = q.front();
+        q.pop();
 
-void bfs(int N, int K)
-{
-    queue<P> Q;
-    Q.push(P(N, 0, -1));
-
-    while (!Q.empty())
-    {
-        int now = Q.front().now;
-        int sec = Q.front().sec;
-        int pre = Q.front().pre;
-        Q.pop();
-
-        if (now >= 0 && now <= 200000 && cnt[now] == -1)
+        if (cur > 0 && dist[cur - 1] == -1)
         {
-            cnt[now] = sec;
-            if (pre != -1)
-                preN[now] = pre;
-            if (now == K)
-                break;
-
-            Q.push(P(now - 1, sec + 1, now));
-            Q.push(P(now + 1, sec + 1, now));
-            Q.push(P(now * 2, sec + 1, now));
+            dist[cur - 1] = dist[cur] + 1;
+            pre[cur - 1] = cur;
+            q.push(cur - 1);
         }
+        if (cur < 200000 && dist[cur + 1] == -1)
+        {
+            dist[cur + 1] = dist[cur] + 1;
+            pre[cur + 1] = cur;
+            q.push(cur + 1);
+        }
+        if (cur <= 100000 && dist[cur * 2] == -1)
+        {
+            dist[cur * 2] = dist[cur] + 1;
+            pre[cur * 2] = cur;
+            q.push(cur * 2);
+        }
+    }
+}
+
+void solve()
+{
+    int k;
+    cin >> n >> k;
+
+    bfs(n);
+
+    cout << dist[k] << endl;
+
+    stack<int> s;
+    int cur = k;
+    while (cur != -1)
+    {
+        s.push(cur);
+        cur = pre[cur];
+    }
+    while (!s.empty())
+    {
+        cout << s.top() << ' ';
+        s.pop();
     }
 }
 
 int main()
 {
-    int N, K;
-    cin >> N >> K;
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
 
-    memset(cnt, -1, sizeof(cnt));
-    memset(preN, -1, sizeof(preN));
-    bfs(N, K);
+#ifdef FILE_RW
+    freopen("local.in", "r", stdin);
+    freopen("local.out", "w", stdout);
+#endif
 
-    stack<int> path;
-    cout << cnt[K] << '\n';
-    while (K != -1)
-    {
-        path.push(K);
-        K = preN[K];
-    }
-    while (!path.empty())
-    {
-        cout << path.top() << " ";
-        path.pop();
-    }
+    solve();
 }
